@@ -1,18 +1,21 @@
 ;; fixes nixpkgs hotpot not adding package path correctly
-(tset _G.package :path (.. (vim.fn.stdpath "cache") "/hotpot/hotpot.nvim/lua/?/init.lua;" package.path))
+
+(tset _G.package :path
+      (.. (vim.fn.stdpath :cache) "/hotpot/hotpot.nvim/lua/?/init.lua;"
+          package.path))
 
 (fn build-init []
- (let [{: build} (require :hotpot.api.make)
-       allowed-globals (icollect [n _ (pairs _G)]
-                         n)
-       opts {:verbosity 0
-             :compiler {:modules {:allowedGlobals allowed-globals}}}
-       here #(values $1)
-       config-path (vim.fn.stdpath :config)]
-   (build config-path opts (.. config-path :/init.fnl) here
-          (.. config-path :/after/ftdetect/.+) here
-          (.. config-path :/ftplugin/.+) here
-          (.. config-path :/after/ftplugin/.+) here)))
+  (let [{: build} (require :hotpot.api.make)
+        allowed-globals (icollect [n _ (pairs _G)]
+                          n)
+        opts {:verbosity 0
+              :compiler {:modules {:allowedGlobals allowed-globals}}}
+        here #(values $1)
+        config-path (vim.fn.stdpath :config)]
+    (build config-path opts (.. config-path :/init.fnl) here
+           (.. config-path :/after/ftdetect/.+) here
+           (.. config-path :/ftplugin/.+) here
+           (.. config-path :/after/ftplugin/.+) here)))
 
 ;; Call hotpot.setup and compile again after fs event 
 
