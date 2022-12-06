@@ -5,3 +5,4 @@
 (require :conf.pkgs.null-ls)
 (require :conf.pkgs.lspconfig)
 (require :conf.pkgs.treesitter)
+(require :conf.pkgs.conjure)
