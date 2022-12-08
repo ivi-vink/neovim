@@ -8,3 +8,7 @@
 (lspconfig.tsserver.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                   (vim.fn.getcwd))
                            :on_attach attach})
+
+(lspconfig.yamlls.setup {:root_dir (lspconfig.util.root_pattern :.git
+                                                                (vim.fn.getcwd))
+                         :on_attach attach})
