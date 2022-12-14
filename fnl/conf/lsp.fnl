@@ -16,7 +16,7 @@
       :definitionProvider (bm :n :<leader>gd (lspdo :definition))
       :declaration (bm :n :<leader>gD (lspdo :declaration))
       :implementationProvider (bm :n :<leader>gi (lspdo :implementation))
-      :referencesProvider (bm :n :<leader>gi (lspdo :references))
+      :referencesProvider (bm :n :<leader>gg (lspdo :references))
       :documentSymbolProvider (bm :n :<leader>gds (lspdo :workspace_symbol))
       :codeActionProvider (bm :n :<leader>ga (lspdo :code_action))
       :hoverProvider (bo :keywordprg ":LspHover")
