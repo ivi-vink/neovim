@@ -21,17 +21,15 @@
       :codeActionProvider (bm :n :<leader>ga (lspdo :code_action))
       :hoverProvider (bo :keywordprg ":LspHover")
       :documentRangeFormattingProvider
-      (if format (bm :v :<leader>gq (lspdo :range_formatting)))
-      :documentFormattingProvider (if format
-                                      ((fn []
-                                         (bo :formatexpr
-                                             "v:lua.vim.lsp.format()")
-                                         (bm :n :<leader>gq
-                                             #(vim.lsp.buf.format {:async true})))))))
-
-  (each [cpb enabled? (pairs client.server_capabilities)]
-    (if enabled?
-        (use cpb))))
+      (if format (bm :v :<leader>gq (lspdo :range_formatting))
+          :documentFormattingProvider
+          (if format
+              ((fn []
+                 (bo :formatexpr "v:lua.vim.lsp.format()"
+                     (bm :n :<leader>gq #(vim.lsp.buf.format {:async true}))))))
+          (each [cpb enabled? (pairs client.server_capabilities)]
+            (if enabled?
+                (use cpb)))))))
 
 (fn attach [client buf format]
   (fn P [p]

@@ -3,6 +3,9 @@
 (vim.cmd "filetype indent on")
 (vim.cmd "highlight WinSeparator guibg=None")
 
-(require :conf.lsp)
-(require :conf.pkgs)
 (require :conf.settings)
+(require :conf.pkgs)
+(require :conf.lsp)
+(require :conf.events)
+
+(require :conf.diagnostic)
