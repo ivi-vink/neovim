@@ -10,4 +10,5 @@
                             null-ls.builtins.formatting.prettier
                             null-ls.builtins.formatting.raco_fmt
                             null-ls.builtins.formatting.alejandra
+                            null-ls.builtins.formatting.terraform_fmt
                             null-ls.builtins.formatting.fnlfmt]}))
