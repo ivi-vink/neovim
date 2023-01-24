@@ -33,12 +33,25 @@
     (if enabled?
         (use cpb))))
 
-(fn attach [client buf format]
-  (fn P [p]
-    (print (vim.inspect p))
-    p)
+(fn P [p]
+  (print (vim.inspect p))
+  p)
 
+(fn register-handlers [{: client : buf}]
+  (tset (. client :handlers) :textDocument/publishDiagnostics
+        (vim.lsp.with (fn [_ result ctx config]
+                        (vim.lsp.diagnostic.on_publish_diagnostics _ result ctx
+                                                                   config)
+                        (vim.diagnostic.setloclist {:open false}))
+                      {:virtual_text true
+                       :underline false
+                       :update_in_insert false
+                       :severity_sort true}))
+  {: client : buf})
+
+(fn attach [client buf format]
   (-> {: client : buf}
+      (register-handlers)
       (map-to-capabilities format)))
 
 {: attach}
