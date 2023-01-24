@@ -6,6 +6,7 @@
                                            pattern))
                               (vim.cmd "hi link TrailingWhitespace IncSearch"))
       trim [:*.fnl
+            :*.nix
             :*.md
             :*.hcl
             :*.tf
@@ -24,7 +25,7 @@
             :*.go]
       white_space_trim (fn []
                          (local pattern "\\s\\+$")
-                         (vim.cmd (.. :%substitute/ pattern ://ge)))]
+                         (vim.cmd (.. "%substitute/" pattern ://ge)))]
   (vim.api.nvim_create_autocmd [:BufReadPost]
                                {:pattern ["*"]
                                 :callback white_space_highlight
