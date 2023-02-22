@@ -9,10 +9,7 @@
                                                                   (vim.fn.getcwd))
                            :on_attach attach})
 
-(lspconfig.yamlls.setup {:root_dir (lspconfig.util.root_pattern :.git
-                                                                (vim.fn.getcwd))
-                         :on_attach attach})
-
 (lspconfig.gopls.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                (vim.fn.getcwd))
-                        :on_attach attach})
+                        :on_attach attach
+                        :settings {:gopls {:buildFlags ["-tags=all"]}}})

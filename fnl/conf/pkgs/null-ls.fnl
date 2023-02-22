@@ -6,8 +6,6 @@
                   :sources [null-ls.builtins.formatting.black
                             null-ls.builtins.formatting.goimports
                             null-ls.builtins.formatting.gofumpt
-                            null-ls.builtins.formatting.golines
-                            null-ls.builtins.formatting.prettier
                             null-ls.builtins.formatting.raco_fmt
                             null-ls.builtins.formatting.alejandra
                             null-ls.builtins.formatting.terraform_fmt
