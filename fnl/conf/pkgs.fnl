@@ -7,3 +7,4 @@
 (require :conf.pkgs.test)
 (require :conf.pkgs.trouble)
 (require :conf.pkgs.lsp_lines)
+(require :conf.pkgs.dap)
