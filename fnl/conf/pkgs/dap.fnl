@@ -12,6 +12,12 @@
 (tset configurations :go
       [{:type :delve :name :Debug :request :launch :program "${fileDirname}"}
        {:type :delve
+        :name :DebugTest
+        :request :launch
+        :mode :test
+        :env {:CGO_CFLAGS :-Wno-error=cpp}
+        :program "${file}"}
+       {:type :delve
         :name :DebugTerraform
         :request :launch
         :program "${file}"
@@ -23,12 +29,6 @@
         :program "${file}"
         :mode :test
         :env {:CGO_CFLAGS :-Wno-error=cpp :TF_ACC "1"}}
-       {:type :delve
-        :name :DebugTest
-        :request :launch
-        :mode :test
-        :env {:CGO_CFLAGS :-Wno-error=cpp}
-        :program "${file}"}
        {:type :delve
         :name :DebugTestMod
         :request :launch
