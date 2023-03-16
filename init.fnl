@@ -17,7 +17,7 @@
            (.. config-path :/ftplugin/.+) here
            (.. config-path :/after/ftplugin/.+) here)))
 
-;; Call hotpot.setup and compile again after fs event 
+;; Call hotpot.setup and compile again after fs event
 
 (let [hotpot (require :hotpot)
       setup hotpot.setup

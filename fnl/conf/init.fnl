@@ -1,4 +1,4 @@
-(vim.cmd "colorscheme gruvbox-material")
+(vim.cmd "colorscheme kanagawa-wave")
 (vim.cmd "filetype plugin on")
 (vim.cmd "filetype indent on")
 (vim.cmd "highlight WinSeparator guibg=None")

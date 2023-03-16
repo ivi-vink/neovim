@@ -8,3 +8,4 @@
 (require :conf.pkgs.trouble)
 (require :conf.pkgs.lsp_lines)
 (require :conf.pkgs.dap)
+(require :conf.pkgs.heirline)
