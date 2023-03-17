@@ -8,6 +8,8 @@
 (require :conf.lsp)
 (require :conf.events)
 
+;; (require :conf.cmd)
+
 (require :conf.diagnostic)
 
 ;; TODO: make a function that sets this autocommand: au BufWritePost currentfile :!curl -X POST -d "{\"previewRun\": true, \"yamlOverride\": \"$(cat % | yq -P)\", \"resources\": {\"repositories\": {\"self\": {\"refName\": \"refs/heads/branch\"}}}}" -s -H "Content-Type: application/json" -H "Authorization: Basic $WORK_AZDO_GIT_AUTH" "$WORK_AZDO_GIT_ORG_URL/Stater/_apis/pipelines/pipelineid/preview?api-version=7.1-preview.1" | jq -r '.finalYaml // .' > scratch.yaml
