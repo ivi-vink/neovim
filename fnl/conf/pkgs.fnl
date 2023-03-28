@@ -9,3 +9,4 @@
 (require :conf.pkgs.lsp_lines)
 (require :conf.pkgs.dap)
 (require :conf.pkgs.heirline)
+(require :conf.pkgs.gitsigns)
