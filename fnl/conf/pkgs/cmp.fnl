@@ -32,8 +32,7 @@
                       :<C-f> (cmp.mapping.scroll_docs 4)
                       :<C-A> (cmp.mapping.complete)
                       :<C-y> (cmp.mapping.confirm {:select true})}
-            :sources (cmp.config.sources [{:name :conjure}
-                                          {:name :nvim_lsp}
+            :sources (cmp.config.sources [{:name :nvim_lsp}
                                           {:name :path}
                                           {:name :luasnip}])})
     (if (not autocomplete) (tset cfg :completion {:autocomplete false}))
