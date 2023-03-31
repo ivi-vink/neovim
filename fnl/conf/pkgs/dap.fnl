@@ -14,13 +14,13 @@
         :name :Debug
         :request :launch
         :env {:CGO_CFLAGS :-Wno-error=cpp}
-        :program "${fileDirname}"}
+        :program "${file}"}
        {:type :delve
         :name :DebugTest
         :request :launch
         :mode :test
         :env {:CGO_CFLAGS :-Wno-error=cpp}
-        :program "${fileDirname}"}
+        :program "${file}"}
        {:type :delve
         :name :DebugTerraform
         :request :launch
@@ -34,11 +34,11 @@
         :mode :test
         :env {:CGO_CFLAGS :-Wno-error=cpp :TF_ACC :1}}
        {:type :delve
-        :name :DebugTestMod
+        :name :DebugTestSuite
         :request :launch
         :mode :test
         :env {:CGO_CFLAGS :-Wno-error=cpp}
-        :program "${relativeFileDirname}"}])
+        :program "${fileDirname}"}])
 
 (dapui.setup {:expand_lines false})
 

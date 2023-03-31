@@ -1,3 +1,7 @@
+(fn P [p]
+  (print (vim.inspect p))
+  p)
+
 (fn map-to-capabilities [{: client : buf} format]
   (fn bo [name value]
     (vim.api.nvim_buf_set_option buf name value))
@@ -19,6 +23,9 @@
       :referencesProvider (bm :n :<leader>gi (lspdo :references))
       :documentSymbolProvider (bm :n :<leader>gds (lspdo :workspace_symbol))
       :codeActionProvider (bm :n :<leader>ga (lspdo :code_action))
+      :codeLensProvider (bm :n :<leader>gl
+                            (lambda []
+                              (vim.lsp.codelens.run)))
       :hoverProvider (bo :keywordprg ":LspHover")
       :documentRangeFormattingProvider
       (if format (bm :v :<leader>gq (lspdo :range_formatting)))
@@ -30,12 +37,9 @@
                                              #(vim.lsp.buf.format {:async true})))))))
 
   (each [cpb enabled? (pairs client.server_capabilities)]
+    (P cpb)
     (if enabled?
         (use cpb))))
-
-(fn P [p]
-  (print (vim.inspect p))
-  p)
 
 (fn register-handlers [{: client : buf}]
   (tset (. client :handlers) :textDocument/publishDiagnostics
@@ -43,10 +47,10 @@
                         (vim.lsp.diagnostic.on_publish_diagnostics _ result ctx
                                                                    config)
                         (vim.diagnostic.setloclist {:open false}))
-                      {:virtual_text false
-                       :underline true
-                       :update_in_insert false
-                       :severity_sort true}))
+          {:virtual_text false
+           :underline true
+           :update_in_insert false
+           :severity_sort true}))
   {: client : buf})
 
 (fn attach [client buf format]

@@ -13,7 +13,9 @@
 (lspconfig.gopls.setup {:root_dir (lspconfig.util.root_pattern :.git
                                                                (vim.fn.getcwd))
                         :on_attach attach
-                        :settings {:gopls {:buildFlags [:-tags=all]}}})
+                        :settings {:gopls {:codelenses {:test true :bench true}
+                                           ;;  Show a code lens toggling the display of gc's choices.}
+                                           :buildFlags [:-tags=all]}}})
 
 (tset configs :fennel_language_server
       {:default_config {;; replace it with true path
@@ -26,6 +28,5 @@
                                                         ;; make the server aware of neovim runtime files.
                                                         :library (vim.api.nvim_list_runtime_paths)}
                                             :diagnostics {:globals [:vim]}}}}})
-
 
 (lspconfig.fennel_language_server.setup {:on_attach attach})
