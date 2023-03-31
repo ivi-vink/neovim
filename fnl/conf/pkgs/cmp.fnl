@@ -11,6 +11,7 @@
                (luasnip.lsp_expand (. args :body)))]
     (local cfg
            {:snippet {:expand snip}
+            :preselect cmp.PreselectMode.None
             :mapping {:<Tab> (cmp.mapping (fn [fallback]
                                             (if (cmp.visible)
                                                 (cmp.select_next_item)

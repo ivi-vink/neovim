@@ -28,13 +28,22 @@
         :request :launch
         :program "${file}"
         :mode :test
-        :env {:CGO_CFLAGS :-Wno-error=cpp :TF_ACC "1"}}
+        :env {:CGO_CFLAGS :-Wno-error=cpp :TF_ACC :1}}
        {:type :delve
         :name :DebugTestMod
         :request :launch
         :mode :test
         :env {:CGO_CFLAGS :-Wno-error=cpp}
         :program "${relativeFileDirname}"}])
+
+(let [venv (os.getenv :VIRTUAL_ENV)]
+  (when venv
+    (tset adapters :python
+          {:type :executable
+           :command (.. venv :/bin/python)
+           :args [:-m :debugpy.adapter]})
+    (tset configurations :python
+          [{:type :python :request :launch :name :file :program "${file}"}])))
 
 (dapui.setup)
 (vim.keymap.set :n :<leader>dui dapui.toggle {:silent true})
