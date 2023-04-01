@@ -42,7 +42,4 @@
      (each [a# b# (ipairs l#)]
        (tset (. vim :g) (. b# 1) (. b# 2)))))
 
-(fn P [...]
-  `(print (vim.inspect [...])))
-
-{: P : settings : globals}
+{: settings : globals}

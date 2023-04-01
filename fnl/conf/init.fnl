@@ -23,3 +23,9 @@
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>"))
+
+(tset _G :P (lambda [...]
+              (let [inspected (icollect [_ v (ipairs [...])]
+                                (vim.inspect v))]
+                (each [_ printer (ipairs inspected)]
+                  (print printer)))))

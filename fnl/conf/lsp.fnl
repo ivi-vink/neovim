@@ -1,7 +1,3 @@
-(fn P [p]
-  (print (vim.inspect p))
-  p)
-
 (fn map-to-capabilities [{: client : buf} format]
   (fn bo [name value]
     (vim.api.nvim_buf_set_option buf name value))
@@ -37,9 +33,9 @@
                                              #(vim.lsp.buf.format {:async true})))))))
 
   (each [cpb enabled? (pairs client.server_capabilities)]
-    (P cpb)
     (if enabled?
-        (use cpb))))
+        (use cpb)))
+  {: client : buf})
 
 (fn register-handlers [{: client : buf}]
   (tset (. client :handlers) :textDocument/publishDiagnostics
@@ -53,9 +49,29 @@
            :severity_sort true}))
   {: client : buf})
 
+(var format-on-save true)
+(fn toggle-format-on-save []
+  (set format-on-save (not format-on-save)))
+
+(vim.api.nvim_create_user_command :LspToggleOnSave toggle-format-on-save
+                                  {:nargs 1 :complete (fn [] [:format])})
+
+(fn events [{: client : buf}]
+  (match client.server_capabilities
+    {:documentFormattingProvider true}
+    (let [format-events-group (vim.api.nvim_create_augroup :format-events
+                                                           {:clear true})]
+      (vim.api.nvim_create_autocmd [:BufWritePre]
+                                   {:group format-events-group
+                                    :callback (lambda []
+                                                (if format-on-save
+                                                    (vim.lsp.buf.format)))
+                                    :buffer buf}))))
+
 (fn attach [client buf format]
   (-> {: client : buf}
       (register-handlers)
-      (map-to-capabilities format)))
+      (map-to-capabilities format)
+      (events)))
 
 {: attach}
