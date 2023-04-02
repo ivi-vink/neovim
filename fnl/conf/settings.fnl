@@ -60,4 +60,5 @@
   laststatus 3
   winbar "%=%m %f"
   hlsearch off
-  clipboard "")
+  clipboard ""
+  showtabline 2)
