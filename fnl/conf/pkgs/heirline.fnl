@@ -86,7 +86,15 @@
                    ScrollBar
                    Space])
 
+(local harpoon (require :harpoon))
 (local harpoon-mark (require :harpoon.mark))
+(local HarpoonMarks {:provider (lambda []
+                                 (local marks (harpoon.get_mark_config))
+                                 (table.concat (icollect [_ mark (ipairs marks.marks)]
+                                                 (do
+                                                   (vim.fn.pathshorten mark.filename)))
+                                               " "))})
+
 (local Tabpage
        {:provider (lambda [self]
                     (fn fnamemod [name mod]
@@ -94,16 +102,45 @@
 
                     (fn format-name [name]
                       (if (= name "") "[No Name]"
-                          (fnamemod name ":.:t")))
+                          (fnamemod name ":t")))
 
-                    (local harpoon_marks
-                           (accumulate
-                             (icollect [_ win (ipairs (vim.api.nvim_tabpage_list_wins self.tabpage))]
-                                (vim.api.nvim_win_get_buf win))))
-                    (print (vim.inspect harpoon_marks))
-                    (.. "%" self.tabnr "T " self.tabnr " " " %T"))
+                    (.. "%" self.tabnr "T " self.tabnr " "))
         :hl (lambda [self]
               (if (not (. self :is_active)) :TabLine :TabLineSel))})
+
+(fn active-tab-hrpn [self]
+  (local hl {})
+  (if (. self :is_active)
+      (do
+        (tset hl :fg (theme :syn :identifier))
+        (tset hl :bold true)))
+  hl)
+
+(fn active-hl [hl]
+  (lambda [self]
+    (if self.is_active
+        hl
+        {})))
+
+(fn tab-harpoon-marks [tab]
+  (icollect [_ buf (ipairs (accumulate [buffers [] _ buf (ipairs (vim.fn.tabpagebuflist tab))]
+                             (do
+                               (if (not (vim.tbl_contains buffers buf))
+                                   (table.insert buffers buf))
+                               buffers)))]
+    (do
+      (local status (harpoon-mark.status buf))
+      (if (not= status "")
+          status))))
+
+(local Tabpage
+       (utils.insert Tabpage {:hl active-tab-hrpn :provider " [ "}
+                     {:hl (active-hl {:fg (theme :syn :fun)})
+                      :provider (lambda [self]
+                                  (local harpoon_marks
+                                         (tab-harpoon-marks self.tabpage))
+                                  (table.concat harpoon_marks " "))}
+                     {:hl active-tab-hrpn :provider " ] %T"}))
 
 (local TabpageClose {:provider "%999X  %X" :hl :TabLine})
 
@@ -112,8 +149,7 @@
         :condition (lambda []
                      (>= (length (vim.api.nvim_list_tabpages)) 2))})
 
-(local TabPages
-       (utils.insert TabPages {:provider "%="} (utils.make_tablist Tabpage)
-                     TabpageClose))
+(local TabPages (utils.insert TabPages Align (utils.make_tablist Tabpage)
+                              TabpageClose))
 
-(heirline.setup {:statusline StatusLine :tabline [TabPages]})
+(heirline.setup {:statusline StatusLine :tabline [HarpoonMarks TabPages]})
