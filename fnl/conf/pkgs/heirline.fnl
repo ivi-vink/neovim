@@ -9,10 +9,10 @@
 
 (heirline.load_colors colors)
 (fn palette [name]
-  (. (. colors :palette) name))
+  (. colors :palette name))
 
 (fn theme [theme name]
-  (. (. (. colors :theme) theme) name))
+  (. colors :theme theme name))
 
 (var FileNameBlock
      {;; let's first set up some attributes needed by this component and it's children
@@ -71,9 +71,10 @@
         :provider (lambda [self]
                     (local curr_line (. (vim.api.nvim_win_get_cursor 0) 1))
                     (local lines (vim.api.nvim_buf_line_count 0))
-                    (local i (+ (math.floor (* (/ (- curr_line 1) lines)
-                                               (length (. self :sbar))))
-                                1))
+                    (local i
+                           (- (length self.sbar)
+                              (math.floor (* (/ (- curr_line 1) lines)
+                                             (length (. self :sbar))))))
                     (string.rep (. self :sbar i) 2))
         :hl {:fg (theme :syn :fun) :bg (theme :ui :bg)}})
 
