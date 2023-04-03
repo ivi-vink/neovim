@@ -100,7 +100,7 @@
                 {:hl {:bold true :fg (. harpoon-colors i)} :provider ")"} Space))
 
 (local HarpoonMarks (utils.insert {:hl :TabLineSel}
-                                  {:provider " "
+                                  {:provider "🌊 "
                                    :hl {:fg (theme :syn :identifier)
                                         :bold true}}
                                   {:init (lambda [self]
@@ -164,7 +164,7 @@
           status))))
 
 (local Tabpage
-       (utils.insert Tabpage {:hl active-tab-hrpn :provider " [ "}
+       (utils.insert Tabpage {:hl active-tab-hrpn :provider "🌊 [ "}
                      {:hl (active-hl {:fg (theme :syn :fun)})
                       :provider (lambda [self]
                                   (local harpoon_marks
