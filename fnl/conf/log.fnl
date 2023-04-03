@@ -1,5 +1,3 @@
-(import-macros {: P} :conf.macros)
-
 (local scratches {})
 (fn scratch-buffer [name ft]
   (fn setopt [buf opt value]

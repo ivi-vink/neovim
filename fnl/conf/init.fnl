@@ -22,7 +22,8 @@
   (map :n "[q" ":cprevious<cr>")
   (map :n "]q" ":cnext<cr>")
   (map :n "[x" ":lprevious<cr>")
-  (map :n "]x" ":lnext<cr>"))
+  (map :n "]x" ":lnext<cr>")
+  (map :n :<c-p> ":Telescope find_files<cr>"))
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
