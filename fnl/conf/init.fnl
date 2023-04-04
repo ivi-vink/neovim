@@ -7,6 +7,7 @@
 (require :conf.pkgs)
 (require :conf.lsp)
 (require :conf.events)
+(require :conf.newtab)
 
 ;; (require :conf.cmd)
 
