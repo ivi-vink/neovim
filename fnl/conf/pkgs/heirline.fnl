@@ -169,7 +169,7 @@
                      {:hl (active-hl {:fg (theme :syn :fun)})
                       :provider (lambda [self]
                                   (local harpoon_marks
-                                         (tab-harpoon-marks self.tabpage))
+                                         (tab-harpoon-marks self.tabnr))
                                   (table.concat harpoon_marks " "))}
                      {:hl active-tab-hrpn :provider " ] %T"}))
 

@@ -13,6 +13,7 @@
                        :finder (finders.new_oneshot_job [:fd
                                                          :-d1
                                                          "."
+                                                         (os.getenv :HOME)
                                                          (.. (os.getenv :HOME)
                                                              :/projects)]
                                                         {})
@@ -27,7 +28,10 @@
                                                                                             1)))
                                                                             (vim.cmd (.. :tc
                                                                                          (. selection
-                                                                                            1))))))
+                                                                                            1)))
+                                                                            (vim.cmd (.. :Telescope
+                                                                                         " "
+                                                                                         :find_files)))))
                        :sorter (conf.generic_sorter opts)}))
   (finder:find))
 
