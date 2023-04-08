@@ -17,7 +17,8 @@
     (vim.api.nvim_win_close w false)))
 
 (fn visible? [b]
-  (if (or (= nil b) (not (vim.api.nvim_buf_is_valid b))) false)
+  (if (or (= nil b) (not (vim.api.nvim_buf_is_valid b)))
+      false)
   (local wlist (vim.fn.win_findbuf b))
   (print (vim.inspect wlist))
   (< 0 (length wlist)))
