@@ -1,4 +1,4 @@
-(local vec (require :conf.exctl.frames.vec))
+(local vec (require :conf.wict-nvim.frames.vec))
 (local m {})
 (local frame {})
 

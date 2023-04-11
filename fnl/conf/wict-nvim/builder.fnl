@@ -1,6 +1,6 @@
-(tset package.loaded :conf.exctl.frames.frame nil)
-(local vec (require :conf.exctl.frames.vec))
-(local frame (require :conf.exctl.frames.frame))
+(tset package.loaded :conf.wict-nvim.frames.frame nil)
+(local vec (require :conf.wict-nvim.frames.vec))
+(local frame (require :conf.wict-nvim.frames.frame))
 (local m {})
 
 ;; Creates a new painter that wraps the paint and close methods of a painter
@@ -24,18 +24,34 @@
                                          (vec.vec pad-width (- 1 pad-height))))
                (transformed frm))))
 
+(local beside (fn [p1 p2 size]
+                (local size (or size 0.5))
+                (local left
+                       (transform-painter p1 (vec.vec 0 0) (vec.vec size 0)
+                                          (vec.vec 0 1)))
+                (local right
+                       (transform-painter p2 (vec.vec size 0) (vec.vec 1 0)
+                                          (vec.vec size 1)))
+                (fn [frm]
+                  (left frm)
+                  (right frm))))
+
 (local builder {})
-;;
-(fn builder.For [self partial-painter ...]
-  (table.insert self.partial-painters partial-painter)
-  self)
 
 (fn builder.Padding [self size]
   (table.insert self.partial-painters {:op :pad : size})
   self)
 
-(fn builder.Beside [self partial-builder]
-  (table.insert self.partial-painters {:op :beside : partial-builder})
+(fn builder.Beside [self partial-builder size]
+  (table.insert self.partial-painters {:op :beside : partial-builder : size})
+  self)
+
+(fn builder.LeftOf [self partial-builder size]
+  (table.insert self.partial-painters {:op :left : partial-builder : size})
+  self)
+
+(fn builder.RightOf [self partial-builder size]
+  (table.insert self.partial-painters {:op :right : partial-builder : size})
   self)
 
 (fn builder.build-painter [self effects]
@@ -44,9 +60,17 @@
       (match partial-painter
         {:op :pad : size} (do
                             (pad painter size))
+        {:op :left : partial-builder} (do
+                                        (beside painter
+                                                (partial-builder:build-painter effects)
+                                                partial-painter.size))
+        {:op :right : partial-builder} (do
+                                         (beside (partial-builder:build-painter effects)
+                                                 painter partial-painter.size))
         {:op :beside : partial-builder} (do
-                                          (P (partial-builder:build-painter effects))
-                                          painter)
+                                          (beside painter
+                                                  (partial-builder:build-painter effects)
+                                                  partial-painter.size))
         {: maps : buffer} (do
                             (local window (effects:new-window maps))
                             (local painter-ptr painter)
@@ -61,16 +85,15 @@
         _ painter))))
 
 (fn builder.Build [self effects]
-  ;; TODO(mike): probably nice to model effects as pub sub pattern to make it rely less on references to mutable tables.
   (local painter (self:build-painter effects))
   (fn [frm]
     (effects:attach)
     (painter frm)))
 
-(fn builder.new [self]
-  (local bldr {:partial-painters []})
-  (setmetatable bldr self)
-  (set self.__index self)
+(fn builder.For [partial-painter]
+  (local bldr {:partial-painters [partial-painter]})
+  (setmetatable bldr builder)
+  (set builder.__index builder)
   bldr)
 
 builder
