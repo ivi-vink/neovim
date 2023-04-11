@@ -30,10 +30,6 @@
 
 (fn m.frame->coord [f]
   (fn [v]
-    (P :a (vec.scale (v:x-coord) (f:width-edge)))
-    (P :b (vec.scale (v:y-coord) (f:height-edge)))
-    (P :added (vec.add (vec.scale (v:x-coord) (f:width-edge))
-                       (vec.scale (v:y-coord) (f:height-edge))))
     (vec.add (f:origin)
              (vec.add (vec.scale (v:x-coord) (f:width-edge))
                       (vec.scale (v:y-coord) (f:height-edge))))))
@@ -51,11 +47,12 @@
   (local ori (f:origin))
   (local width-edge (f:width-edge))
   (local height-edge (f:height-edge))
+  (local anchor (or anchor :NW))
   {:width (width-edge:x-coord)
    :height (height-edge:y-coord)
    :col (ori:x-coord)
    :row (ori:y-coord)
-   :anchor :NW
+   : anchor
    :relative :editor})
 
 (setmetatable m {:__call (fn [self ...]
