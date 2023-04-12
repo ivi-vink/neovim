@@ -59,9 +59,10 @@
     (cmp.setup.cmdline ":"
                        {:sources (cmp.config.sources [{:name :path}]
                                                      [{:name :cmdline_history
-                                                       :keyword_pattern "^[^hGw].*"
+                                                       :keyword_pattern "^[^ehGgw].*"
                                                        :max_item_count 1}
                                                       {:name :cmdline
+                                                       :keyword_length 2
                                                        :entry_filter (fn [entry
                                                                           ctx]
                                                                        (if (string-startswith entry.completion_item.label
