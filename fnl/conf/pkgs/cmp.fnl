@@ -7,6 +7,17 @@
        (fn [str start]
          (= start (string.sub str 1 (string.len start)))))
 
+(local string-startswith-anyof (fn [str start-list]
+                                 (var ret false)
+                                 (each [_ start (ipairs start-list)]
+                                   (set ret (string-startswith str start)))
+                                 ret))
+
+(local string-startswith-upper
+       (fn [str]
+         (local first-char (string.sub str 1 1))
+         (= first-char (string.upper first-char))))
+
 (fn has-words-before []
   (local [line col] (vim.api.nvim_win_get_cursor 0))
   (local [word & rest] (vim.api.nvim_buf_get_lines 0 (- line 1) line true))
@@ -59,7 +70,12 @@
     (cmp.setup.cmdline ":"
                        {:sources (cmp.config.sources [{:name :path}]
                                                      [{:name :cmdline_history
-                                                       :keyword_pattern "^[^ehGgw].*"
+                                                       :keyword_pattern "^[ABCDEFHIJKLMNOPQRSTUVWXYZ].*"
+                                                       :entry_filter (fn [entry
+                                                                          ctx]
+                                                                       (if (string-startswith-upper entry.completion_item.label)
+                                                                           true
+                                                                           false))
                                                        :max_item_count 1}
                                                       {:name :cmdline
                                                        :keyword_length 2

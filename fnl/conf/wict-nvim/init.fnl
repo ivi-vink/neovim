@@ -28,6 +28,4 @@
                    (builder.Build (effects:new))))
 
 ; (painter root-frame)
-{: root-frame
- : builder
- : effects}
+{: root-frame : builder : effects}
