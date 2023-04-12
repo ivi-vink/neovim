@@ -1,6 +1,12 @@
 (local cmp (require :cmp))
 (local compare (require :cmp.config.compare))
 
+(local once false)
+
+(local string-startswith
+       (fn [str start]
+         (= start (string.sub str 1 (string.len start)))))
+
 (fn has-words-before []
   (local [line col] (vim.api.nvim_win_get_cursor 0))
   (local [word & rest] (vim.api.nvim_buf_get_lines 0 (- line 1) line true))
@@ -53,17 +59,27 @@
     (cmp.setup.cmdline ":"
                        {:sources (cmp.config.sources [{:name :path}]
                                                      [{:name :cmdline_history
-                                                       :max_item_count 5}
-                                                      {:name :cmdline}])
+                                                       :keyword_pattern "^[^hGw].*"
+                                                       :max_item_count 1}
+                                                      {:name :cmdline
+                                                       :entry_filter (fn [entry
+                                                                          ctx]
+                                                                       (if (string-startswith entry.completion_item.label
+                                                                                              :w)
+                                                                           false
+                                                                           true))}])
                         :experimental {:ghost_text true}
                         :preselect cmp.PreselectMode.Item
+                        ; :completion {:keyword_length 2}
                         :sorting {:priority_weight 2
-                                  :comparators [compare.offset
-                                                ; compare.scopes
-                                                ; compare.length
-                                                ; compare.recently_used
-                                                compare.order
-                                                compare.exact]}
+                                  :comparators [compare.order
+                                                compare.exact
+                                                compare.length]}
+                        ; compare.offset
+                        ; compare.scopes
+                        ; compare.length
+                        ; compare.recently_used
+                        ; compare.exact]}
                         ;compare.score]}
                         ; compare.locality]}
                         ; compare.kind]}
