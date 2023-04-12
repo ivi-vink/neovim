@@ -1,7 +1,7 @@
 (local cmp (require :cmp))
 (local compare (require :cmp.config.compare))
 
-(local once false)
+(var once false)
 
 (local string-startswith
        (fn [str start]
@@ -68,7 +68,8 @@
                         :experimental {:ghost_text true}
                         :mapping (cmp.mapping.preset.cmdline)})
     (cmp.setup.cmdline ":"
-                       {:sources (cmp.config.sources [{:name :path}]
+                       {:matching {:disallow_prefix_unmatching true}
+                        :sources (cmp.config.sources [{:name :path}]
                                                      [{:name :cmdline_history
                                                        :keyword_pattern "^[ABCDEFHIJKLMNOPQRSTUVWXYZ].*"
                                                        :entry_filter (fn [entry
