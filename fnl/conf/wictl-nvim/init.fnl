@@ -28,3 +28,4 @@
               (bld.Build (eff:new))))
 
 (ui wict.root-frame)
+(table.tostring {:hi :there})

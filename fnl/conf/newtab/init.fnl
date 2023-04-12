@@ -29,9 +29,10 @@
                                                                             (vim.cmd (.. :tc
                                                                                          (. selection
                                                                                             1)))
-                                                                            (vim.cmd (.. :Telescope
-                                                                                         " "
-                                                                                         :find_files)))))
+                                                                            (vim.schedule (fn []
+                                                                                            (vim.cmd (.. :Telescope
+                                                                                                         " "
+                                                                                                         :find_files)))))))
                        :sorter (conf.generic_sorter opts)}))
   (finder:find))
 

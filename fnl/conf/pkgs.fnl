@@ -8,7 +8,7 @@
 (require :conf.pkgs.test)
 (require :conf.pkgs.trouble)
 (require :conf.pkgs.lsp_lines)
-(require :conf.pkgs.lsp_signature)
+(require :conf.pkgs.noice)
 (require :conf.pkgs.dap)
 (require :conf.pkgs.heirline)
 (require :conf.pkgs.gitsigns)

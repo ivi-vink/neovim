@@ -1,4 +1,5 @@
 (local cmp (require :cmp))
+(local compare (require :cmp.config.compare))
 
 (fn has-words-before []
   (local [line col] (vim.api.nvim_win_get_cursor 0))
@@ -15,7 +16,8 @@
         snip (fn [args]
                (luasnip.lsp_expand (. args :body)))]
     (local cfg
-           {:snippet {:expand snip}
+           {:experimental {:ghost_text true}
+            :snippet {:expand snip}
             :preselect cmp.PreselectMode.None
             :mapping {:<Tab> (cmp.mapping (fn [fallback]
                                             (if (cmp.visible)
@@ -39,11 +41,38 @@
                       :<CR> (cmp.mapping.confirm {:behavior (enum :ConfirmBehavior
                                                                   :Replace)
                                                   :select true})}
-            :sources (cmp.config.sources [{:name :nvim_lsp}
-                                          {:name :path}
-                                          {:name :luasnip}])})
+            :sources (cmp.config.sources [{:name :nvim_lsp
+                                           {:name :path} {:name :luasnip}}])})
     (if (not autocomplete) (tset cfg :completion {:autocomplete false}))
     ;; (print (vim.inspect cfg))
-    (cmp.setup cfg)))
+    (cmp.setup cfg)
+    (cmp.setup.cmdline ["/" "?"]
+                       {:sources (cmp.config.sources [{:name :buffer}])
+                        :experimental {:ghost_text true}
+                        :mapping (cmp.mapping.preset.cmdline)})
+    (cmp.setup.cmdline ":"
+                       {:sources (cmp.config.sources [{:name :path}]
+                                                     [{:name :cmdline_history
+                                                       :max_item_count 5}
+                                                      {:name :cmdline}])
+                        :experimental {:ghost_text true}
+                        :preselect cmp.PreselectMode.Item
+                        :sorting {:priority_weight 2
+                                  :comparators [compare.offset
+                                                ; compare.scopes
+                                                ; compare.length
+                                                ; compare.recently_used
+                                                compare.order
+                                                compare.exact]}
+                        ;compare.score]}
+                        ; compare.locality]}
+                        ; compare.kind]}
+                        ; compare.sort_text
+                        :mapping (cmp.mapping.preset.cmdline {:<CR> {:c (fn [fallback]
+                                                                          (if (not (cmp.confirm {:behavior (enum :ConfirmBehavior
+                                                                                                                 :Replace)
+                                                                                                 :select true}))
+                                                                              (fallback)
+                                                                              (vim.schedule fallback)))}})})))
 
 (cmp-setup cmp true)

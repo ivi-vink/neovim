@@ -1,6 +1,7 @@
 (import-macros {: settings : globals} :conf.macros)
 
 (globals
+  codeium_enabled false
   loaded_2html_plugin true
   loaded_fzf false
   loaded_man false
@@ -55,6 +56,7 @@
   exrc on
   secure on
   completeopt "menuone,noselect"
+  wildmode "lastused"
   complete ".,w,k,kspell,b"
   foldopen "block,hor,jump,mark,percent,quickfix,search,tag"
   laststatus 3
