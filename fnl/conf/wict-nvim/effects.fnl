@@ -2,7 +2,7 @@
 (local window {})
 
 (local aug vim.api.nvim_create_augroup)
-(local del-aug vim.api.nvim_del_augroup_by_id)
+(local del-aug (fn [] (vim.api.nvim_create_augroup :EffectsMgr {:clear true})))
 (local au vim.api.nvim_create_autocmd)
 (local winvar (fn [...] (pcall vim.api.nvim_win_get_var ...)))
 (local unmap (fn [{: mode : lhs : opts}] (pcall vim.keymap.del mode lhs opts)))
@@ -15,6 +15,8 @@
 (fn window.open [self buf frame]
   (set frame.style :minimal)
   (set self.handle (vim.api.nvim_open_win buf false frame))
+  (P self.handle :before-setvar)
+  (vim.api.nvim_buf_set_var buf :effect-window self)
   (vim.api.nvim_win_set_var self.handle :effect-window self)
   (if self.enter
       (vim.api.nvim_set_current_win self.handle)))
@@ -47,11 +49,13 @@
 
 (fn m.attach [self]
   (set self.augroup (aug :EffectsMgr {:clear true}))
-  (au [:WinEnter :BufEnter]
+  (au [:WinEnter]
       {:group self.augroup
        :pattern "*"
        :callback (fn [cb-info]
+                   (P :effectEnter)
                    (local (ok? win) (winvar 0 :effect-window))
+                   (P ok? win)
                    (if (not ok?)
                        (self:close)
                        (do
@@ -59,6 +63,7 @@
                              (self:win-maps win)))))}))
 
 (fn m.win-maps [self win]
+  (P win)
   (if self.unmap
       (self.unmap))
   (set self.unmap (fn []

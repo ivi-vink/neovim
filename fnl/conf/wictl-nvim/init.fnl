@@ -33,7 +33,8 @@
 (local ensure-complete-project (fn [config]
                                  (var config (or config {:terms []}))
                                  (if (not config.terms)
-                                     (set config.terms [{:name :k9s :cmd :k9s}]))
+                                     (set config.terms
+                                          [{:name :k9s :cmd :bash}]))
                                  config))
 
 (local get-project (fn []
@@ -53,3 +54,5 @@
 (m.Save)
 (m.Read cache_config)
 (m.Get-Terms-Config)
+
+m
