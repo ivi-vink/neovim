@@ -10,7 +10,9 @@
 (local string-startswith-anyof (fn [str start-list]
                                  (var ret false)
                                  (each [_ start (ipairs start-list)]
-                                   (set ret (string-startswith str start)))
+                                   (do
+                                     (P ret)
+                                     (set ret (string-startswith str start))))
                                  ret))
 
 (local string-startswith-upper
@@ -70,21 +72,16 @@
     (cmp.setup.cmdline ":"
                        {:matching {:disallow_prefix_unmatching true}
                         :sources (cmp.config.sources [{:name :path}]
-                                                     [{:name :cmdline_history
-                                                       :keyword_pattern "^[ABCDEFHIJKLMNOPQRSTUVWXYZ].*"
+                                                     [{:name :cmdline
+                                                       :keyword_length 1
                                                        :entry_filter (fn [entry
                                                                           ctx]
-                                                                       (if (string-startswith-upper entry.completion_item.label)
-                                                                           true
-                                                                           false))
-                                                       :max_item_count 1}
-                                                      {:name :cmdline
-                                                       :keyword_length 2
-                                                       :entry_filter (fn [entry
-                                                                          ctx]
-                                                                       (if (string-startswith entry.completion_item.label
-                                                                                              :w)
-                                                                           false
+                                                                       (if (string-startswith-anyof entry.completion_item.label
+                                                                                                    [:w
+                                                                                                     :sp])
+                                                                           (do
+                                                                             (P entry.completion_item.label)
+                                                                             false)
                                                                            true))}])
                         :experimental {:ghost_text true}
                         :preselect cmp.PreselectMode.Item
@@ -109,4 +106,12 @@
                                                                               (fallback)
                                                                               (vim.schedule fallback)))}})})))
 
+; {:name :cmdline_history
+;                                                        :keyword_pattern "^[ABCDEFHIJKLMNOPQRSTUVWXYZ].*"
+;                                                        :entry_filter (fn [entry
+;                                                                           ctx]
+;                                                                        (if (string-startswith-upper entry.completion_item.label)
+;                                                                            true
+;                                                                            false))
+;                                                        :max_item_count 1)})))
 (cmp-setup cmp true)
