@@ -1,5 +1,6 @@
 (local cmp (require :cmp))
 (local compare (require :cmp.config.compare))
+(local always-first [:write :edit :split :quit])
 
 (fn string-startswith? [str start]
   (= start (string.sub str 1 (string.len start))))
@@ -66,17 +67,31 @@
                         :experimental {:ghost_text true}
                         :mapping (cmp.mapping.preset.cmdline)})
     (cmp.setup.cmdline ":"
-                       {:matching {:disallow_partial_matching true
+                       {:matching {:disallow_partial_fuzzy_matching true
                                    :disallow_prefix_unmatching true}
                         :sources (cmp.config.sources [{:name :path}]
                                                      [{:name :cmdline
-                                                       :keyword_length 1
-                                                       :entry_filter (fn [entry
-                                                                          ctx]
-                                                                       (not (string-startswith-anyof? entry.completion_item.label
-                                                                                                      [:w
-                                                                                                       :sp])))}])
+                                                       :keyword_length 1}])
                         :preselect cmp.PreselectMode.Item
+                        :sorting {:priority_weight 2
+                                  :comparators [(fn [e1 e2]
+                                                  (fn iter [[item & rest]]
+                                                    (if (or (not rest)
+                                                            (not item))
+                                                        false
+                                                        (= e1.completion_item.label
+                                                           item)
+                                                        true
+                                                        (iter rest)))
+
+                                                  (iter always-first))
+                                                compare.offset
+                                                compare.exact
+                                                compare.score
+                                                compare.locality
+                                                compare.kind
+                                                compare.length
+                                                compare.order]}
                         :mapping (cmp.mapping.preset.cmdline {:<CR> {:c (fn [fallback]
                                                                           (if (not (cmp.confirm {:behavior (enum :ConfirmBehavior
                                                                                                                  :Replace)
