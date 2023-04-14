@@ -57,8 +57,9 @@
                       :<CR> (cmp.mapping.confirm {:behavior (enum :ConfirmBehavior
                                                                   :Replace)
                                                   :select true})}
-            :sources (cmp.config.sources [{:name :nvim_lsp
-                                           {:name :path} {:name :luasnip}}])})
+            :sources (cmp.config.sources [{:name :nvim_lsp}
+                                          {:name :path}
+                                          {:name :luasnip}])})
     (if (not autocomplete) (tset cfg :completion {:autocomplete false}))
     ;; (print (vim.inspect cfg))
     (cmp.setup cfg)
