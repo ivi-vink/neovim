@@ -23,6 +23,7 @@
   dirvish_mode ":sort | sort ,^.*[^/]$, r")
 
 (settings
+  cmdheight 0
   +shortmess "c"
   +diffopt vertical
   +isfname "@-@"

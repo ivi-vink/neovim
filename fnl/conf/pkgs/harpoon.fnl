@@ -17,7 +17,6 @@
   (print (vim.inspect use-numbers)))
 
 (fn toggle-harpoon-mappings []
-  (print-use-numbers)
   (if (not use-numbers)
       (do
         ; (each [_ i (ipairs shortcuts)] ;   (vim.keymap.del :n i))

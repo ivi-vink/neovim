@@ -1,6 +1,6 @@
 (local loop vim.loop)
 
-(var dev-env {})
+(var original-env {})
 (local ignored-variables {:SHELL true
                           :BASHOPTS true
                           :HOME true
@@ -20,26 +20,29 @@
                           :TZ true
                           :UID true})
 
+(local separated-dirs {:PATH ":" :XDG_DATA_DIRS ":"})
+
+(fn set-env [key value]
+  (if (not (. original-env key))
+      (tset original-env key (or (. vim.env key) :nix-develop-nil)))
+  (local sep (. separated-dirs key))
+  (if sep
+      (do
+        (local suffix (or (. vim.env key) ""))
+        (tset vim.env key (.. value sep suffix)))
+      (tset vim.env key value)))
+
+(fn unload-env []
+  (each [k v (pairs original-env)]
+    (if (= v :nix-develop-nil)
+        (tset vim.env k nil)
+        (tset vim.env k v))))
+
 (fn ignored? [key]
   (. ignored-variables (string.upper key)))
 
-(fn split [str sep]
-  (local l [])
-  (each [m (str:gmatch "[^\r\n]+")]
-    (P m)
-    (table.insert l m))
-  (P l))
-
-(fn qf [title lines]
-  (P lines)
-  (vim.fn.setqflist [] " " {: title : lines})
-  (vim.cmd :cope))
-
 (fn exported? [Type]
   (= Type :exported))
-
-(fn set-env [variables])
-(fn unload-env [])
 
 (fn nix-develop [fargs]
   (local cmd :nix)
@@ -50,29 +53,34 @@
   (var nix-print-dev-env "")
   (local p (loop.spawn cmd {: args : stdio}
                        (fn [code signal]
-                         (vim.schedule (fn []
-                                         (local json
-                                                (vim.fn.json_decode nix-print-dev-env))
-                                         (-> (accumulate [kvps {} key {: Type
-                                                                       : value} (pairs json.variables)]
-                                              (do
-                                                (if (and (exported? Type)
-                                                         (not (ignored? key)))
-                                                    (tset kvps key value))
-                                                kvps))
-                                             (#(each [key value (pairs $1)]
-                                                 (set-env key value)))
-                                             (#(set dev-env $1))))))))
+                         (vim.notify (.. "nix-develop: exit code " code " "
+                                         signal)))))
   (loop.read_start stdout
                    (fn [err data]
                      (assert (not err) err)
                      (if data
                          (set nix-print-dev-env (.. nix-print-dev-env data))
-                         (P {:msg "stdout end" : stdout})))))
-
-(nix-develop)
+                         (do
+                           (P {:msg "stdout end" : stdout})
+                           (vim.schedule #(each [key {: type : value} (pairs (. (vim.fn.json_decode nix-print-dev-env)
+                                                                                :variables))]
+                                            (do
+                                              (if (and (exported? type)
+                                                       (not (ignored? key)))
+                                                  (do
+                                                    (set-env key value)))))))))))
 
 (vim.api.nvim_create_user_command :NixDevelop
                                   (fn [ctx]
                                     (nix-develop ctx.fargs))
                                   {:nargs "*"})
+
+(vim.api.nvim_create_augroup :nix-develop {:clear true})
+(vim.api.nvim_create_autocmd [:DirChanged :VimEnter]
+                             {:pattern ["*"]
+                              :callback (fn [ctx]
+                                          (unload-env)
+                                          (if (= 1
+                                                 (vim.fn.filereadable (.. ctx.file
+                                                                          :/flake.nix)))
+                                              (nix-develop)))})

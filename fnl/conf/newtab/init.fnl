@@ -22,17 +22,12 @@
                                                                             (actions.close prompt_buf)
                                                                             (local selection
                                                                                    (action_state.get_selected_entry))
-                                                                            (P selection)
                                                                             (vim.cmd (.. :tabnew
                                                                                          (. selection
                                                                                             1)))
                                                                             (vim.cmd (.. :tc
                                                                                          (. selection
-                                                                                            1)))
-                                                                            (vim.schedule (fn []
-                                                                                            (vim.cmd (.. :Telescope
-                                                                                                         " "
-                                                                                                         :find_files)))))))
+                                                                                            1))))))
                        :sorter (conf.generic_sorter opts)}))
   (finder:find))
 

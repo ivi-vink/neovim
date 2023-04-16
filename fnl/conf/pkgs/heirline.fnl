@@ -78,10 +78,20 @@
                     (string.rep (. self :sbar i) 2))
         :hl {:fg (theme :syn :fun) :bg (theme :ui :bg)}})
 
+(local Nix
+       {:condition (fn [] vim.env.IN_NIX_SHELL)
+        :provider (fn [self]
+                    (local purity vim.env.IN_NIX_SHELL)
+                    (local name vim.env.name)
+                    (.. "" purity "(" name ")"))
+        :hl {:fg (theme :syn :fun) :bold true :bg (theme :ui :bg_m3)}})
+
 (local StatusLine [FileNameBlock
                    Space
                    DAPMessages
                    Align
+                   Nix
+                   Space
                    Ruler
                    Space
                    ScrollBar

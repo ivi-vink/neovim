@@ -33,5 +33,4 @@
         path (vim.fn.expand (.. config-path :/init.fnl))]
     (uv.fs_event_start handle path {} #(vim.schedule build-init))
     (vim.api.nvim_create_autocmd :VimLeavePre {:callback #(uv.close handle)})))
-
 (require :conf)
