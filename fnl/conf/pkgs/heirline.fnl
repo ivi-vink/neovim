@@ -100,21 +100,24 @@
                        (theme :syn :identifier)])
 
 (fn mark-component [i mark]
-  (utils.insert {} {:hl {:bg (theme :ui :bg_m1)
+  (utils.insert {} {:hl {:bg (if (= mark.filename
+                                    (vim.fn.fnamemodify (vim.api.nvim_buf_get_name 0)
+                                                        ":."))
+                                 (theme :ui :bg_p1)
+                                 (theme :ui :bg_m1))
                          :bold true
                          :fg (. harpoon-colors i)}
                     :provider (fn [self]
-                                (.. :M i " "))}))
+                                (.. " M" i " "))}))
 
 ;{:hl {:fg (theme :syn :fun)} :provider (vim.fn.pathshorten mark.filename)}))
 ; {:hl {:bold true :fg (. harpoon-colors i)} :provider ")"} Space))
 
 (local HarpoonMarks
-       (utils.insert {:hl :TabLineSel}
-                     {:provider "🌊 "
-                      :hl {:bg (theme :ui :bg_m1)
-                           :fg (theme :syn :identifier)
-                           :bold true}}
+       (utils.insert {:hl :TabLineSel
+                      :condition #(< 0
+                                     (length (. (harpoon.get_mark_config)
+                                                :marks)))}
                      {:init (lambda [self]
                               (local mark-list
                                      (. (harpoon.get_mark_config) :marks))
