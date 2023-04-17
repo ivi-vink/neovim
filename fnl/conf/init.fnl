@@ -35,3 +35,10 @@
                                 (vim.inspect v))]
                 (each [_ printer (ipairs inspected)]
                   (print printer)))))
+
+(vim.api.nvim_create_user_command :HomeManager
+                                  (fn [ctx]
+                                    (vim.cmd (.. ":Dispatch home-manager switch --impure "
+                                                 (os.getenv :HOME) "/flake#"
+                                                 (. ctx.fargs 1))))
+                                  {:nargs :1})

@@ -23,7 +23,6 @@
   dirvish_mode ":sort | sort ,^.*[^/]$, r")
 
 (settings
-  cmdheight 0
   +shortmess "c"
   +diffopt vertical
   +isfname "@-@"
@@ -61,7 +60,9 @@
   complete ".,w,k,kspell,b"
   foldopen "block,hor,jump,mark,percent,quickfix,search,tag"
   laststatus 3
-  winbar "%=%m %f"
+  ; winbar "%=%m %f"
+  winbar ""
   hlsearch off
   clipboard ""
-  showtabline 2)
+  showtabline 0
+  cmdheight 0)

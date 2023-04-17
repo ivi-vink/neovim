@@ -6,6 +6,13 @@
 
 (local Align {:provider "%="})
 (local Space {:provider " "})
+(fn with [tbl with-kv]
+  (local w {})
+  (each [k v (pairs tbl)]
+    (tset w k v))
+  (each [k v (pairs with-kv)]
+    (tset w k v))
+  w)
 
 (heirline.load_colors colors)
 (fn palette [name]
@@ -86,17 +93,6 @@
                     (.. "" purity "(" name ")"))
         :hl {:fg (theme :syn :fun) :bold true :bg (theme :ui :bg_m3)}})
 
-(local StatusLine [FileNameBlock
-                   Space
-                   DAPMessages
-                   Align
-                   Nix
-                   Space
-                   Ruler
-                   Space
-                   ScrollBar
-                   Space])
-
 (local harpoon (require :harpoon))
 (local harpoon-mark (require :harpoon.mark))
 (local harpoon-colors [(theme :syn :identifier)
@@ -104,29 +100,29 @@
                        (theme :syn :identifier)])
 
 (fn mark-component [i mark]
-  (utils.insert {} {:hl {:bold true :fg (. harpoon-colors i)}
-                    :provider (.. :M i "(")}
-                {:hl {:fg (theme :syn :fun)}
-                 :provider (vim.fn.pathshorten mark.filename)}
-                {:hl {:bold true :fg (. harpoon-colors i)} :provider ")"} Space))
+  (utils.insert {} {:hl {:bg (theme :ui :bg_m1)
+                         :bold true
+                         :fg (. harpoon-colors i)}
+                    :provider (fn [self]
+                                (.. :M i " "))}))
 
-(local HarpoonMarks (utils.insert {:hl :TabLineSel}
-                                  {:provider "🌊 "
-                                   :hl {:fg (theme :syn :identifier)
-                                        :bold true}}
-                                  {:init (lambda [self]
-                                           (local mark-list
-                                                  (. (harpoon.get_mark_config)
-                                                     :marks))
-                                           (each [i mark (ipairs mark-list)]
-                                             (tset self i
-                                                   (self:new (mark-component i
-                                                                             mark)
-                                                             i)))
-                                           (while (> (length self)
-                                                     (length mark-list))
-                                             (table.remove self (length self))))}
-                                  Align))
+;{:hl {:fg (theme :syn :fun)} :provider (vim.fn.pathshorten mark.filename)}))
+; {:hl {:bold true :fg (. harpoon-colors i)} :provider ")"} Space))
+
+(local HarpoonMarks
+       (utils.insert {:hl :TabLineSel}
+                     {:provider "🌊 "
+                      :hl {:bg (theme :ui :bg_m1)
+                           :fg (theme :syn :identifier)
+                           :bold true}}
+                     {:init (lambda [self]
+                              (local mark-list
+                                     (. (harpoon.get_mark_config) :marks))
+                              (each [i mark (ipairs mark-list)]
+                                (tset self i
+                                      (self:new (mark-component i mark) i)))
+                              (while (> (length self) (length mark-list))
+                                (table.remove self (length self))))}))
 
 (local Tabpage
        {:provider (lambda [self]
@@ -193,4 +189,19 @@
 (local TabPages (utils.insert TabPages (utils.make_tablist Tabpage)
                               TabpageClose))
 
-(heirline.setup {:statusline StatusLine :tabline [HarpoonMarks TabPages]})
+(local StatusLine [FileNameBlock
+                   Space
+                   HarpoonMarks
+                   Space
+                   TabPages
+                   DAPMessages
+                   Align
+                   Space
+                   Nix
+                   Space
+                   Ruler
+                   Space
+                   ScrollBar
+                   Space])
+
+(heirline.setup {:statusline StatusLine})
