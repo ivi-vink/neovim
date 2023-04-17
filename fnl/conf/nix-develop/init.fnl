@@ -62,14 +62,14 @@
                          (set nix-print-dev-env (.. nix-print-dev-env data))
                          (do
                            (P {:msg "stdout end" : stdout})
-                           (if (not= data "")
+                           (if (not= nix-print-dev-env "")
                                (vim.schedule #(each [key {: type : value} (pairs (. (vim.fn.json_decode nix-print-dev-env)
-                                                                                   :variables))]
-                                               (do
-                                                 (if (and (exported? type)
-                                                          (not (ignored? key)))
-                                                     (do
-                                                       (set-env key value))))))))))))
+                                                                                    :variables))]
+                                                (do
+                                                  (if (and (exported? type)
+                                                           (not (ignored? key)))
+                                                      (do
+                                                        (set-env key value))))))))))))
 
 (vim.api.nvim_create_user_command :NixDevelop
                                   (fn [ctx]

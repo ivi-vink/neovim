@@ -41,4 +41,4 @@
                                     (vim.cmd (.. ":Dispatch home-manager switch --impure "
                                                  (os.getenv :HOME) "/flake#"
                                                  (. ctx.fargs 1))))
-                                  {:nargs :1})
+                                  {:nargs 1})
