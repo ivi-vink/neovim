@@ -13,3 +13,4 @@
 (require :conf.pkgs.heirline)
 (require :conf.pkgs.gitsigns)
 (require :conf.pkgs.harpoon)
+(require :conf.pkgs.venn)

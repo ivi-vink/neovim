@@ -44,7 +44,45 @@
 (fn exported? [Type]
   (= Type :exported))
 
-(fn nix-develop [fargs]
+(fn handle-shellhook [shellhook] ; (P :handle-shellhook shellhook)
+  (var shellhook-env "")
+  (local stdin (loop.new_pipe))
+  (local stdout (loop.new_pipe))
+  (local p (loop.spawn :bash {:stdio [stdin stdout nil]}
+                       (fn [code signal]
+                         (vim.notify (.. "shellhook: exit code " code " "
+                                         signal)))))
+  (loop.read_start stdout
+                   (fn [err data]
+                     (assert (not err) err)
+                     (if data
+                         (set shellhook-env (.. shellhook-env data))
+                         (do
+                           (if (not= shellhook-env "")
+                               (vim.schedule (fn []
+                                               (local json
+                                                      (vim.fn.json_decode shellhook-env))
+                                               ; (P json)
+                                               (each [key value (pairs json)]
+                                                 (set-env key value)))))))))
+  (stdin:write (.. shellhook "jq -n 'env'\n\n"))
+  (stdin:close))
+
+(fn handle-nix-print-dev-env [str]
+  (vim.schedule (fn []
+                  (local json (. (vim.fn.json_decode str) :variables))
+                  (-> (icollect [key {: type : value} (pairs json)]
+                        (do
+                          (if (and (exported? type) (not (ignored? key)))
+                              (set-env key value))
+                          (if (= key :shellHook)
+                              value)))
+                      (#(each [_ shellhook (ipairs $1)]
+                          (handle-shellhook shellhook)))))))
+
+(fn nix-develop [fargs unload]
+  (if unload
+      (unload-env))
   (local cmd :nix)
   (local fargs (or fargs []))
   (local args [:print-dev-env :--json (unpack fargs)])
@@ -53,27 +91,22 @@
   (var nix-print-dev-env "")
   (local p (loop.spawn cmd {: args : stdio}
                        (fn [code signal]
-                         (vim.notify (.. "nix-develop: exit code " code " "
-                                         signal)))))
+                         (if (not= code 0)
+                             (vim.notify (.. "nix-develop: exit code " code " "
+                                             signal))))))
   (loop.read_start stdout
                    (fn [err data]
                      (assert (not err) err)
                      (if data
                          (set nix-print-dev-env (.. nix-print-dev-env data))
                          (do
-                           (P {:msg "stdout end" : stdout})
+                           (vim.notify "nix-develop: stdout end")
                            (if (not= nix-print-dev-env "")
-                               (vim.schedule #(each [key {: type : value} (pairs (. (vim.fn.json_decode nix-print-dev-env)
-                                                                                    :variables))]
-                                                (do
-                                                  (if (and (exported? type)
-                                                           (not (ignored? key)))
-                                                      (do
-                                                        (set-env key value))))))))))))
+                               (handle-nix-print-dev-env nix-print-dev-env)))))))
 
 (vim.api.nvim_create_user_command :NixDevelop
                                   (fn [ctx]
-                                    (nix-develop ctx.fargs))
+                                    (nix-develop ctx.fargs true))
                                   {:nargs "*"})
 
 (vim.api.nvim_create_augroup :nix-develop {:clear true})
@@ -84,4 +117,4 @@
                                           (if (= 1
                                                  (vim.fn.filereadable (.. ctx.file
                                                                           :/flake.nix)))
-                                              (nix-develop)))})
+                                              (nix-develop false)))})
