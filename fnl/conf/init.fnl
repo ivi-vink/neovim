@@ -30,7 +30,9 @@
   (map :n "]x" ":lnext<cr>")
   (map :n :<c-p> ":Telescope find_files<cr>")
   (map :n "`<Backspace>" ":FocusDispatch ")
-  (map :n "<leader>p" ":NewTab<cr>"))
+  (map :n :<leader>p ":NewTab<cr>")
+  (map :n :<leader>cf ":tabedit ~/flake|G<cr><c-w>o")
+  (map :n :<leader>cn ":tabedit ~/flake|G<cr><c-w>o"))
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
@@ -53,10 +55,18 @@
 (vim.api.nvim_create_user_command :Grunt
                                   (fn [ctx]
                                     (if (= (. ctx.fargs 1) :plan)
-                                        (vim.cmd (.. ":Dispatch " (if ctx.bang "TF_LOG=DEBUG " "") "terragrunt "
+                                        (vim.cmd (.. ":Dispatch "
+                                                     (if ctx.bang
+                                                         "TF_LOG=DEBUG "
+                                                         "")
+                                                     "terragrunt "
                                                      (table.concat ctx.fargs
                                                                    " ")))
-                                        (vim.cmd (.. ":Start " (if ctx.bang "TF_LOG=DEBUG " "") "terragrunt "
+                                        (vim.cmd (.. ":Start "
+                                                     (if ctx.bang
+                                                         "TF_LOG=DEBUG "
+                                                         "")
+                                                     "terragrunt "
                                                      (table.concat ctx.fargs
                                                                    " ")))))
                                   {:nargs "*" :bang true})
