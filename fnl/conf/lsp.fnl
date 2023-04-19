@@ -23,8 +23,6 @@
                             (lambda []
                               (vim.lsp.codelens.run)))
       :hoverProvider (bo :keywordprg ":LspHover")
-      :documentRangeFormattingProvider
-      (if format (bm :v :<leader>gq (lspdo :range_formatting)))
       :documentFormattingProvider (if format
                                       ((fn []
                                          (bo :formatexpr
