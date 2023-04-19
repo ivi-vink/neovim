@@ -6,6 +6,7 @@
                                            pattern))
                               (vim.cmd "hi link TrailingWhitespace IncSearch"))
       trim [:*.fnl
+            :*.rkt
             :*.nix
             :*.md
             :*.hcl

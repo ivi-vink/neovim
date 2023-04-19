@@ -1,6 +1,6 @@
 (local cmp (require :cmp))
 (local compare (require :cmp.config.compare))
-(local always-first [:write :edit :split :quit])
+(local always-first [:write :edit :split :quit :cfirst])
 
 (fn string-startswith? [str start]
   (= start (string.sub str 1 (string.len start))))

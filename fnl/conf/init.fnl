@@ -43,3 +43,8 @@
                                                  (os.getenv :HOME) "/flake#"
                                                  (. ctx.fargs 1))))
                                   {:nargs 1})
+
+(vim.api.nvim_create_user_command :Gpush
+                                  (fn [ctx]
+                                    (vim.cmd ":Dispatch git push"))
+                                  {})
