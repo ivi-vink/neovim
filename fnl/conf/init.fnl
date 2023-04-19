@@ -31,8 +31,8 @@
   (map :n :<c-p> ":Telescope find_files<cr>")
   (map :n "`<Backspace>" ":FocusDispatch ")
   (map :n :<leader>p ":NewTab<cr>")
-  (map :n :<leader>cf ":tabedit ~/flake|cd|G<cr><c-w>o")
-  (map :n :<leader>cn ":tabedit ~/neovim|cd|G<cr><c-w>o"))
+  (map :n :<leader>cf ":tabedit ~/flake|tc ~/flake|G<cr><c-w>o")
+  (map :n :<leader>cn ":tabedit ~/neovim|tc ~/neovim|G<cr><c-w>o"))
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
