@@ -5,6 +5,7 @@
                     :override {[:vim.lsp.util.convert_input_to_markdown_lines] true
                                [:vim.lsp.util.stylize_markdown] true
                                [:cmp.entry.get_documentation] true}}
+              :popupmenu {:enabled false}
               :messages {; NOTE: If you enable messages then the cmdline is enabled automatically.
                          ; This is a current Neovim limitation.
                          :enabled true

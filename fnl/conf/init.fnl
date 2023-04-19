@@ -48,3 +48,14 @@
                                   (fn [ctx]
                                     (vim.cmd ":Dispatch git push"))
                                   {})
+
+(vim.api.nvim_create_user_command :Grunt
+                                  (fn [ctx]
+                                    (if (= (. ctx.fargs 1) :plan)
+                                        (vim.cmd (.. ":Dispatch " (if ctx.bang "TF_LOG=DEBUG " "") "terragrunt "
+                                                     (table.concat ctx.fargs
+                                                                   " ")))
+                                        (vim.cmd (.. ":Start " (if ctx.bang "TF_LOG=DEBUG " "") "terragrunt "
+                                                     (table.concat ctx.fargs
+                                                                   " ")))))
+                                  {:nargs "*" :bang true})
