@@ -29,7 +29,8 @@
   (map :n "[x" ":lprevious<cr>")
   (map :n "]x" ":lnext<cr>")
   (map :n :<c-p> ":Telescope find_files<cr>")
-  (map :n "`<Backspace>" ":FocusDispatch "))
+  (map :n "`<Backspace>" ":FocusDispatch ")
+  (map :n "<leader>p" ":NewTab<cr>"))
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
