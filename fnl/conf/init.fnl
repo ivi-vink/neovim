@@ -32,7 +32,7 @@
   (map :n "`<Backspace>" ":FocusDispatch ")
   (map :n :<leader>p ":NewTab<cr>")
   (map :n :<leader>cf ":tabedit ~/flake|G<cr><c-w>o")
-  (map :n :<leader>cn ":tabedit ~/flake|G<cr><c-w>o"))
+  (map :n :<leader>cn ":tabedit ~/neovim|G<cr><c-w>o"))
 
 (tset _G :P (lambda [...]
               (let [inspected (icollect [_ v (ipairs [...])]
