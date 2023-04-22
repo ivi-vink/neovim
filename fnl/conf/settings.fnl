@@ -44,6 +44,7 @@
   showbreak "﬋"
   listchars { :tab " " :eol "﬋"}
   list on
+  autoread on
   autoindent on
   smartindent on
   expandtab on

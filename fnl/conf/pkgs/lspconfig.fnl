@@ -28,6 +28,13 @@
                                            ;;  Show a code lens toggling the display of gc's choices.}
                                            :buildFlags [:-tags=all]}}})
 
+(lspconfig.ansiblels.setup {:ansible {:ansible {:path :ansible}
+                                      :executionEnvironment {:enabled false}
+                                      :python {:interpreterPath :python}
+                                      :validation {:enabled true
+                                                   :lint {:enabled false
+                                                          :path :ansible-lint}}}})
+
 ;; (tset configs :fennel_language_server
 ;;       {:default_config {;; replace it with true path
 ;;                         :cmd [:fennel-language-server]

@@ -7,10 +7,9 @@
 (require :conf.pkgs)
 (require :conf.lsp)
 (require :conf.events)
+(require :conf.filetype)
 (require :conf.newtab)
 (require :conf.nix-develop)
-
-;; (require :conf.cmd)
 
 (require :conf.diagnostic)
 

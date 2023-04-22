@@ -53,7 +53,7 @@
                                               [:i :s]))
                       :<C-b> (cmp.mapping.scroll_docs -4)
                       :<C-f> (cmp.mapping.scroll_docs 4)
-                      :<C-A> (cmp.mapping.complete)
+                      :<C-j> (cmp.mapping.complete)
                       :<CR> (cmp.mapping.confirm {:behavior (enum :ConfirmBehavior
                                                                   :Replace)
                                                   :select true})}

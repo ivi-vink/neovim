@@ -41,7 +41,7 @@
                         (vim.lsp.diagnostic.on_publish_diagnostics _ result ctx
                                                                    config)
                         (vim.diagnostic.setloclist {:open false}))
-          {:virtual_text false
+          {:virtual_text true
            :underline true
            :update_in_insert false
            :severity_sort true}))
