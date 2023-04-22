@@ -93,6 +93,13 @@
                     (.. "" purity "(" name ")"))
         :hl {:fg (theme :syn :fun) :bold true :bg (theme :ui :bg_m3)}})
 
+(local RecordingMacro {:condition #(not= "" (vim.fn.reg_recording))
+                       :provider (fn [self]
+                                   (.. "Recording... " (vim.fn.reg_recording)))
+                       :hl {:fg (theme :syn :fun)
+                            :bold true
+                            :bg (theme :ui :bg_m3)}})
+
 (local harpoon (require :harpoon))
 (local harpoon-mark (require :harpoon.mark))
 (local harpoon-colors [(theme :syn :identifier)
@@ -198,6 +205,8 @@
                    Space
                    TabPages
                    DAPMessages
+                   Space
+                   RecordingMacro
                    Align
                    Space
                    Nix

@@ -2,6 +2,7 @@
 (vim.cmd "filetype plugin on")
 (vim.cmd "filetype indent on")
 (vim.cmd "highlight WinSeparator guibg=None")
+(vim.cmd "packadd cfilter")
 
 (require :conf.settings)
 (require :conf.pkgs)

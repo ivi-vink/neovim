@@ -33,6 +33,7 @@
                                       :python {:interpreterPath :python}
                                       :validation {:enabled true
                                                    :lint {:enabled false
+                                                          :arguments " --profile=production --write=all "
                                                           :path :ansible-lint}}}})
 
 ;; (tset configs :fennel_language_server

@@ -7,5 +7,5 @@ if exists(':CompilerSet') != 2
   command -nargs=* CompilerSet setlocal <args>
 endif
 
-CompilerSet makeprg=ansible-lint
+CompilerSet makeprg=compile\ ansible-lint
 CompilerSet errorformat=%Z%f:%l\ %m,%Z%f:%l,%E%\\%%(%\\S%\\)%\\@=%m,%C%\\%%(%\\S%\\)%\\@=%m,%-G
