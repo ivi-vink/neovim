@@ -19,7 +19,7 @@
 (let [map vim.keymap.set]
   (map :t :<c-s> "<c-\\><c-n>")
   ;; pausing and continueing printing output is not necessary inside neovim terminal right?
-  (map :t :<c-q> "<c-\\><c-n>")
+  (map :t :<c-q> "<c-\\><c-n>:q<cr>")
   (map :n :<leader>qo ":copen<cr>")
   (map :n :<leader>qc ":cclose<cr>")
   (map :n :<leader>lo ":lopen<cr>")

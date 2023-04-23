@@ -14,12 +14,13 @@ endif
 " But in order to use it in efm we need to replace \ by %\ and % by %%
 
 
-CompilerSet makeprg=racket\ -l\ errortrace
+CompilerSet makeprg=compile\ racket
 CompilerSet errorformat=\%Z%*\\S%.%#,
                         \%C\ \ \ %f:%l:%c,
                         \%C\ \ \ %f:%l:%c:\ %m,
                         \%C\ \ %.%#%\\%%(at\:%\\\|in\:%\\\|expected\:%\\\|given\:%\\)%\\@=%m,
                         \%C\ %.%#,
                         \%E%\\%%(%\\w%\\)%\\@=%f:%*\\d:%*\\d:\ %m,
+                        \%E%\\%%(%\\w\+:%\\)%\\@=%m,
                         \%E%*\\f:%*\\d:%*\\d:\ %m,
 " vim: sw=2 sts=2 et
