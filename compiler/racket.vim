@@ -18,9 +18,9 @@ CompilerSet makeprg=compile\ racket
 CompilerSet errorformat=\%Z%*\\S%.%#,
                         \%C\ \ \ %f:%l:%c,
                         \%C\ \ \ %f:%l:%c:\ %m,
-                        \%C\ \ %.%#%\\%%(at\:%\\\|in\:%\\\|expected\:%\\\|given\:%\\)%\\@=%m,
+                        \%C\ \ %.%#%\\%%(module%\\spath:%\\\|at\:%\\\|in\:%\\\|expected\:%\\\|given\:%\\)%\\@=%m,
                         \%C\ %.%#,
                         \%E%\\%%(%\\w%\\)%\\@=%f:%*\\d:%*\\d:\ %m,
-                        \%E%\\%%(%\\w\+:%\\)%\\@=%m,
                         \%E%*\\f:%*\\d:%*\\d:\ %m,
+                        \%E%\\%%(%\\S%\\+:%\\\|%\.%\\+--%\\)%\\@=%m,
 " vim: sw=2 sts=2 et
