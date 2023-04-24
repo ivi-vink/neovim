@@ -8,7 +8,7 @@
               :popupmenu {:enabled false}
               :messages {; NOTE: If you enable messages then the cmdline is enabled automatically.
                          ; This is a current Neovim limitation.
-                         :enabled false
+                         :enabled true
                          ; enables the Noice messages UI
                          :view :mini
                          ; default view for messages
