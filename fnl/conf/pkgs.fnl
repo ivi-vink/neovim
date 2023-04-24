@@ -6,7 +6,6 @@
 (require :conf.pkgs.tree-sitter-context)
 (require :conf.pkgs.conjure)
 (require :conf.pkgs.test)
-(require :conf.pkgs.trouble)
 (require :conf.pkgs.lsp_lines)
 (require :conf.pkgs.noice)
 (require :conf.pkgs.dap)
