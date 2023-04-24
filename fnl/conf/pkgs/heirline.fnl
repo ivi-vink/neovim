@@ -200,26 +200,25 @@
                               TabpageClose))
 
 (local dispatch-get-request (. vim.fn "dispatch#request"))
-(local Dispatch
-       (utils.insert {:init (fn [self]
-                              (set self.req (dispatch-get-request)))
-                      :condition (fn []
-                                   (not (vim.tbl_isempty (dispatch-get-request))))}
-                     {:provider "dispatch("
-                      :hl (fn [self]
-                            {:fg (if (= 1 self.req.completed)
-                                     (theme :syn :fun)
-                                     (theme :diag :warning))
-                             :bold true})}
-                     {:provider (fn [self]
-                                  self.req.command)
-                      :hl {:fg (theme :syn :string) :bold false}}
-                     {:provider ")"
-                      :hl (fn [self]
-                            {:fg (if (= 1 self.req.completed)
-                                     (theme :syn :fun)
-                                     (theme :diag :warning))
-                             :bold true})}))
+(local Dispatch (utils.insert {:init (fn [self]
+                                       (set self.req (dispatch-get-request)))
+                               :condition (fn []
+                                            (not (vim.tbl_isempty (dispatch-get-request))))}
+                              {:provider "dispatch("
+                               :hl (fn [self]
+                                     {:fg (if (= 1 self.req.completed)
+                                              (theme :syn :fun)
+                                              (theme :diag :warning))
+                                      :bold true})}
+                              {:provider (fn [self]
+                                           self.req.command)
+                               :hl {:fg (theme :syn :string) :bold false}}
+                              {:provider ")"
+                               :hl (fn [self]
+                                     {:fg (if (= 1 self.req.completed)
+                                              (theme :syn :fun)
+                                              (theme :diag :warning))
+                                      :bold true})}))
 
 (local StatusLine [FileNameBlock
                    Space
