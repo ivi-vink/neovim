@@ -48,10 +48,11 @@
   (var shellhook-env "")
   (local stdin (loop.new_pipe))
   (local stdout (loop.new_pipe))
-  (local p (loop.spawn :bash {:stdio [stdin stdout nil]}
-                       (fn [code signal]
-                         (vim.notify (.. "shellhook: exit code " code " "
-                                         signal)))))
+  (local p
+         (loop.spawn :bash {:stdio [stdin stdout nil]}
+                     (fn [code signal]
+                       (vim.schedule #(vim.notify (.. "shellhook: exit code "
+                                                      code " " signal))))))
   (loop.read_start stdout
                    (fn [err data]
                      (assert (not err) err)
@@ -89,18 +90,19 @@
   (local stdout (loop.new_pipe))
   (local stdio [nil stdout nil])
   (var nix-print-dev-env "")
-  (local p (loop.spawn cmd {: args : stdio}
-                       (fn [code signal]
-                         (if (not= code 0)
-                             (vim.notify (.. "nix-develop: exit code " code " "
-                                             signal))))))
+  (local p
+         (loop.spawn cmd {: args : stdio}
+                     (fn [code signal]
+                       (if (not= code 0)
+                           (vim.schedule #(vim.notify (.. "nix-develop: exit code "
+                                                          code " " signal)))))))
   (loop.read_start stdout
                    (fn [err data]
                      (assert (not err) err)
                      (if data
                          (set nix-print-dev-env (.. nix-print-dev-env data))
                          (do
-                           (vim.notify "nix-develop: stdout end")
+                           (vim.schedule #(vim.notify "nix-develop: stdout end"))
                            (if (not= nix-print-dev-env "")
                                (handle-nix-print-dev-env nix-print-dev-env)))))))
 
