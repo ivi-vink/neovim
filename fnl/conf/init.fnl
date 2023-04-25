@@ -40,6 +40,29 @@
                 (each [_ printer (ipairs inspected)]
                   (print printer)))))
 
+(local git-worktree (require :git-worktree))
+(git-worktree:setup {:command :tcd :update_on_change true :autopush true})
+
+(vim.keymap.set [:n] :<leader>w ":Worktree ")
+(vim.api.nvim_create_user_command :Worktree
+                                  (fn [ctx]
+                                    (match ctx.fargs
+                                      [:create tree branch upstream] (git-worktree.create_worktree tree
+                                                                                                   branch
+                                                                                                   upstream)
+                                      [:switch tree] (git-worktree.switch_worktree tree)
+                                      [:delete tree] (git-worktree.delete_worktree tree)))
+                                  {:nargs "*"
+                                   :complete (fn [lead cmdline cursor]
+                                               (local cmds
+                                                      [:create :switch :delete])
+                                               (if (accumulate [cmd-given false _ cmd (ipairs cmds)]
+                                                     (or cmd-given
+                                                         (string.find cmdline
+                                                                      cmd)))
+                                                   []
+                                                   cmds))})
+
 (vim.api.nvim_create_user_command :HomeManager
                                   (fn [ctx]
                                     (vim.cmd (.. ":Dispatch home-manager switch --impure "
