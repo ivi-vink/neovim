@@ -47,18 +47,22 @@
 (vim.api.nvim_create_user_command :Worktree
                                   (fn [ctx]
                                     (match ctx.fargs
+                                      [:create tree branch upstream] (git-worktree.create_worktree tree
+                                                                                                   branch
+                                                                                                   upstream)
                                       [:create tree upstream] (git-worktree.create_worktree tree
                                                                                             tree
                                                                                             upstream)
-                                      [:creates & branches] (each [_ b (ipairs branches)]
-                                                              (vim.cmd (.. ":G worktree add "
-                                                                          b)))
+                                      [:create tree] (git-worktree.create_worktree tree
+                                                                                   tree
+                                                                                   :origin)
                                       [:switch tree] (git-worktree.switch_worktree tree)
-                                      [:delete tree] (git-worktree.delete_worktree tree)))
+                                      [:delete tree] (git-worktree.delete_worktree tree)
+                                      [tree] (git-worktree.switch_worktree tree)))
                                   {:nargs "*"
                                    :complete (fn [lead cmdline cursor]
                                                (local cmds
-                                                      [:create :creates :switch :delete])
+                                                      [:create :switch :delete])
                                                (if (accumulate [cmd-given false _ cmd (ipairs cmds)]
                                                      (or cmd-given
                                                          (string.find cmdline
