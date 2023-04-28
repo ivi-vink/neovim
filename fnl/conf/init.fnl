@@ -41,7 +41,7 @@
                   (print printer)))))
 
 (local git-worktree (require :git-worktree))
-(git-worktree:setup {:command :tcd :update_on_change true :autopush true})
+(git-worktree.setup {:command :tcd :update_on_change true :autopush false})
 
 (vim.keymap.set [:n] :<leader>w ":Worktree ")
 (vim.api.nvim_create_user_command :Worktree
@@ -50,12 +50,15 @@
                                       [:create tree upstream] (git-worktree.create_worktree tree
                                                                                             tree
                                                                                             upstream)
+                                      [:creates & branches] (each [_ b (ipairs branches)]
+                                                              (vim.cmd (.. ":G worktree add "
+                                                                          b)))
                                       [:switch tree] (git-worktree.switch_worktree tree)
                                       [:delete tree] (git-worktree.delete_worktree tree)))
                                   {:nargs "*"
                                    :complete (fn [lead cmdline cursor]
                                                (local cmds
-                                                      [:create :switch :delete])
+                                                      [:create :creates :switch :delete])
                                                (if (accumulate [cmd-given false _ cmd (ipairs cmds)]
                                                      (or cmd-given
                                                          (string.find cmdline
