@@ -47,9 +47,9 @@
 (vim.api.nvim_create_user_command :Worktree
                                   (fn [ctx]
                                     (match ctx.fargs
-                                      [:create tree branch upstream] (git-worktree.create_worktree tree
-                                                                                                   branch
-                                                                                                   upstream)
+                                      [:create tree upstream] (git-worktree.create_worktree tree
+                                                                                            tree
+                                                                                            upstream)
                                       [:switch tree] (git-worktree.switch_worktree tree)
                                       [:delete tree] (git-worktree.delete_worktree tree)))
                                   {:nargs "*"
