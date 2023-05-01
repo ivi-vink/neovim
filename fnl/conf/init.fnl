@@ -41,7 +41,9 @@
                   (print printer)))))
 
 (local git-worktree (require :git-worktree))
-(git-worktree.setup {:command :tcd :update_on_change true :autopush false})
+(git-worktree.setup {:change_directory_command :tcd
+                     :update_on_change true
+                     :autopush false})
 
 (vim.keymap.set [:n] :<leader>w ":Worktree ")
 (vim.api.nvim_create_user_command :Worktree
