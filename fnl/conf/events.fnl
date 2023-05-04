@@ -1,33 +1,28 @@
 (vim.api.nvim_create_augroup "conf#events" {:clear true})
+(local event vim.api.nvim_create_autocmd)
 
-(fn white_space_highlight []
-  (local pattern "'\\s\\+$'")
-  (vim.cmd (.. "syn match TrailingWhitespace " pattern))
-  (vim.cmd "hi link TrailingWhitespace IncSearch"))
-
-(vim.api.nvim_create_autocmd [:BufReadPost]
-                             {:pattern ["*"]
-                              :callback white_space_highlight
-                              :group "conf#events"})
+(event [:BufReadPost] {:pattern ["*"]
+                       :callback (fn []
+                                   (local pattern "'\\s\\+$'")
+                                   (vim.cmd (.. "syn match TrailingWhitespace "
+                                                pattern))
+                                   (vim.cmd "hi link TrailingWhitespace IncSearch"))
+                       :group "conf#events"})
 
 (local vimenter-cwd (vim.fn.getcwd))
-(fn save-session []
-  (P vimenter-cwd)
-  (vim.cmd (.. "mksession! " vimenter-cwd :/.vimsession.vim)))
+(event [:VimLeave] {:pattern ["*"]
+                    :callback (fn []
+                                (vim.cmd (.. "mksession! " vimenter-cwd
+                                             :/.vimsession.vim)))
+                    :group "conf#events"})
 
-(vim.api.nvim_create_autocmd [:VimLeave]
-                             {:pattern ["*"]
-                              :callback save-session
-                              :group "conf#events"})
+(event [:BufWinEnter :WinEnter]
+       {:pattern ["term://*"]
+        :callback (fn []
+                    (vim.cmd :startinsert))
+        :group "conf#events"})
 
-(vim.api.nvim_create_autocmd [:BufWinEnter :WinEnter]
-                             {:pattern ["term://*"]
-                              :callback (fn []
-                                          (vim.cmd :startinsert))
-                              :group "conf#events"})
-
-(vim.api.nvim_create_autocmd [:BufLeave]
-                             {:pattern ["term://*"]
-                              :callback (fn []
-                                          (vim.cmd :stopinsert))
-                              :group "conf#events"})
+(event [:BufLeave] {:pattern ["term://*"]
+                    :callback (fn []
+                                (vim.cmd :stopinsert))
+                    :group "conf#events"})
