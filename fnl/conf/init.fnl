@@ -31,6 +31,7 @@
   (map :n :<c-p> ":Telescope find_files<cr>")
   (map :n "`<Backspace>" ":FocusDispatch ")
   (map :n "`k" ":K9s ")
+  (map :n "`s" ":Ssh ")
   (map :n :<leader>p ":NewTab<cr>")
   (map :n :<leader>cf ":tabedit ~/flake|tc ~/flake|G<cr><c-w>o")
   (map :n :<leader>cn ":tabedit ~/neovim|tc ~/neovim|G<cr><c-w>o"))
@@ -118,3 +119,16 @@
                                     (vim.cmd (.. ":Start k9s --context "
                                                  (. ctx.fargs 1))))
                                   {:nargs 1})
+
+(vim.api.nvim_create_user_command :Ssh
+                                  (fn [ctx]
+                                    (vim.cmd (.. ":Start ssh " (. ctx.fargs 1))))
+                                  {:nargs 1
+                                   :complete (fn [lead cmdline cursor]
+                                               (local p
+                                                      (io.popen :get-sshables))
+                                               (local lines
+                                                      (icollect [line (p:lines)]
+                                                        line))
+                                               (p:close)
+                                               lines)})
