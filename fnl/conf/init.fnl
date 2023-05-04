@@ -30,6 +30,7 @@
   (map :n "]x" ":lnext<cr>")
   (map :n :<c-p> ":Telescope find_files<cr>")
   (map :n "`<Backspace>" ":FocusDispatch ")
+  (map :n "`k" ":K9s ")
   (map :n :<leader>p ":NewTab<cr>")
   (map :n :<leader>cf ":tabedit ~/flake|tc ~/flake|G<cr><c-w>o")
   (map :n :<leader>cn ":tabedit ~/neovim|tc ~/neovim|G<cr><c-w>o"))

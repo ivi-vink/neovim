@@ -19,3 +19,15 @@
                              {:pattern ["*"]
                               :callback save-session
                               :group "conf#events"})
+
+(vim.api.nvim_create_autocmd [:BufWinEnter :WinEnter]
+                             {:pattern ["term://*"]
+                              :callback (fn []
+                                          (vim.cmd :startinsert))
+                              :group "conf#events"})
+
+(vim.api.nvim_create_autocmd [:BufLeave]
+                             {:pattern ["term://*"]
+                              :callback (fn []
+                                          (vim.cmd :stopinsert))
+                              :group "conf#events"})
