@@ -72,7 +72,7 @@
 (fn list-worktrees []
   (local pworktree (io.popen "git worktree list --porcelain"))
   (icollect [_ worktree (by-newline (icollect [line (pworktree:lines)]
-                                              line))]
+                                      line))]
     (match (icollect [_ line (ipairs worktree)]
              (vim.split line " "))
       [[:worktree path] [:HEAD commit] [:branch branch]] (branch:gsub :refs/heads/
