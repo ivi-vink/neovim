@@ -47,7 +47,37 @@
                      :update_on_change true
                      :autopush false})
 
-(vim.keymap.set [:n] :<leader>w ":Worktree ")
+(fn append [tbl item]
+  (table.insert tbl item)
+  tbl)
+
+(fn by-newline [lines]
+  (fn iter [items by result]
+    (local [item & rest] items)
+    (if (= item nil) result
+        (= "" item) (iter rest [] (append result by))
+        (iter rest (append by item) result)))
+
+  (iter lines [] []))
+
+(vim.keymap.set [:n] :<leader>w
+                (fn []
+                  (vim.fn.feedkeys ":Worktree switch ")
+                  (local cmp (require :cmp))
+                  (vim.schedule (fn []
+                                  (cmp.close)
+                                  (cmp.complete)))))
+
+(vim.keymap.set [:n] :<leader>W ":Worktree ")
+(fn list-worktrees []
+  (local pworktree (io.popen "git worktree list --porcelain"))
+  (icollect [_ worktree (ipairs (by-newline (icollect [line (pworktree:lines)]
+                                              line)))]
+    (match (icollect [_ line (ipairs worktree)]
+             (vim.split line " "))
+      [[:worktree path] [:HEAD commit] [:branch branch]] (branch:gsub :refs/heads/
+                                                                      ""))))
+
 (vim.api.nvim_create_user_command :Worktree
                                   (fn [ctx]
                                     (match ctx.fargs
@@ -62,17 +92,16 @@
                                                                                    :origin)
                                       [:switch tree] (git-worktree.switch_worktree tree)
                                       [:delete tree] (git-worktree.delete_worktree tree)
-                                      [tree] (git-worktree.switch_worktree tree)))
+                                      _ (vim.notify "not recognized")))
                                   {:nargs "*"
                                    :complete (fn [lead cmdline cursor]
-                                               (local cmds
-                                                      [:create :switch :delete])
-                                               (if (accumulate [cmd-given false _ cmd (ipairs cmds)]
-                                                     (or cmd-given
-                                                         (string.find cmdline
-                                                                      cmd)))
-                                                   []
-                                                   cmds))})
+                                               (local cmdline-tokens
+                                                      (vim.split cmdline " "))
+                                               (match cmdline-tokens
+                                                 [:Worktree :switch & rest] (list-worktrees)
+                                                 [:Worktree & rest] [:create
+                                                                     :switch
+                                                                     :delete]))})
 
 (vim.api.nvim_create_user_command :HomeManager
                                   (fn [ctx]
