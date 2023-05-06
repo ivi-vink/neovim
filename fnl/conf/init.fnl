@@ -58,7 +58,7 @@
         (= "" item) (iter rest [] (append result by))
         (iter rest (append by item) result)))
 
-  (iter lines [] []))
+  (ipairs (iter lines [] [])))
 
 (vim.keymap.set [:n] :<leader>w
                 (fn []
@@ -71,8 +71,8 @@
 (vim.keymap.set [:n] :<leader>W ":Worktree ")
 (fn list-worktrees []
   (local pworktree (io.popen "git worktree list --porcelain"))
-  (icollect [_ worktree (ipairs (by-newline (icollect [line (pworktree:lines)]
-                                              line)))]
+  (icollect [_ worktree (by-newline (icollect [line (pworktree:lines)]
+                                              line))]
     (match (icollect [_ line (ipairs worktree)]
              (vim.split line " "))
       [[:worktree path] [:HEAD commit] [:branch branch]] (branch:gsub :refs/heads/
