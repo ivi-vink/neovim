@@ -45,7 +45,7 @@
 (local git-worktree (require :git-worktree))
 (git-worktree.setup {:change_directory_command :tcd
                      :update_on_change true
-                     :autopush false})
+                     :autopush true})
 
 (fn append [tbl item]
   (table.insert tbl item)
@@ -78,6 +78,13 @@
       [[:worktree path] [:HEAD commit] [:branch branch]] (branch:gsub :refs/heads/
                                                                       ""))))
 
+(fn list-branches []
+  (local pbranch (io.popen "git branch --list -r --format \"%(refname)\""))
+  (icollect [_ ref (ipairs (icollect [line (pbranch:lines)]
+                             (line:gsub :refs/remotes/.+/ "")))]
+    (if (not (= ref :HEAD))
+        ref)))
+
 (vim.api.nvim_create_user_command :Worktree
                                   (fn [ctx]
                                     (match ctx.fargs
@@ -98,7 +105,9 @@
                                                (local cmdline-tokens
                                                       (vim.split cmdline " "))
                                                (match cmdline-tokens
+                                                 [:Worktree :create & rest] (list-branches)
                                                  [:Worktree :switch & rest] (list-worktrees)
+                                                 [:Worktree :delete & rest] (list-worktrees)
                                                  [:Worktree & rest] [:create
                                                                      :switch
                                                                      :delete]))})
