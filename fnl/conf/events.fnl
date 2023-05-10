@@ -26,3 +26,7 @@
                     :callback (fn []
                                 (vim.cmd :stopinsert))
                     :group "conf#events"})
+
+(event [:FileType] {:pattern [:dirvish]
+                    :callback #(vim.cmd "silent! unmap <buffer> <C-p>")
+                    :group "conf#events"})
